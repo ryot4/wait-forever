@@ -1,0 +1,23 @@
+wait-forever
+------------
+
+wait-forever is a program that does nothing and blocks forever.
+It is suitable for the last program invoked from .xinitrc script.
+
+Usage
+-----
+
+Run wait-forever where you want to do.
+
+    $ wait-forever
+
+To stop waiting, kill the process.
+
+Optionally, you can specify the path of the pid file:
+
+    $ wait-forever /tmp/wait.pid
+
+In this case, wait-forever writes its own process ID to /tmp/wait.pid, so you
+can kill the process as follows.
+
+    $ kill $(cat /tmp/wait.pid)
