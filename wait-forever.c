@@ -27,6 +27,8 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+volatile sig_atomic_t waiting;
+
 void writepid(const char *pidfile);
 void handle_signal(int _sig);
 void handle_child_signal(int _sig);
@@ -72,7 +74,10 @@ main(int argc, char **argv)
 		writepid(pidfile);
 	}
 
-	pause();
+	waiting = true;
+	while (waiting) {
+		pause();
+	}
 
 	if (pidfile != NULL && remove_pidfile) {
 		if (unlink(pidfile) == -1) {
@@ -102,6 +107,7 @@ writepid(const char *pidfile)
 void
 handle_signal(int _sig)
 {
+	waiting = false;
 }
 
 void
