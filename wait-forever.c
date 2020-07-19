@@ -70,6 +70,10 @@ writepid(const char *pidfile)
 		exit(EXIT_FAILURE);
 	}
 	fprintf(fp, "%d\n", getpid());
+	if (fflush(fp) == EOF) {
+		perror("failed to write to the pid file");
+		exit(EXIT_FAILURE);
+	}
 	fclose(fp);
 }
 
