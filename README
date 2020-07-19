@@ -21,3 +21,7 @@ In this case, wait-forever writes its own process ID to /tmp/wait.pid, so you
 can kill the process as follows.
 
     $ kill $(cat /tmp/wait.pid)
+
+With -r option, the pid file is removed on exit.
+
+    $ wait-forever -r /tmp/wait.pid

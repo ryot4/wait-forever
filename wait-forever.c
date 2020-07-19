@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <signal.h>
 #include <unistd.h>
 #include <sys/wait.h>
@@ -34,11 +35,14 @@ int
 main(int argc, char **argv)
 {
 	const char *pidfile = NULL;
+	bool remove_pidfile = false;
 
 	for (int i = 1 ; i < argc; ++i) {
 		if (strcmp(argv[i], "-h") == 0) {
-			printf("%s [pidfile]\n", argv[0]);
+			printf("%s [-r] [pidfile]\n", argv[0]);
 			return 0;
+		} else if (strcmp(argv[i], "-r") == 0) {
+			remove_pidfile = true;
 		} else {
 			pidfile = argv[i];
 			break;
@@ -67,8 +71,15 @@ main(int argc, char **argv)
 	if (pidfile != NULL) {
 		writepid(pidfile);
 	}
+
 	pause();
 
+	if (pidfile != NULL && remove_pidfile) {
+		if (unlink(pidfile) == -1) {
+			perror("failed to remove the pid file");
+			exit(EXIT_FAILURE);
+		}
+	}
 	return 0;
 }
 
