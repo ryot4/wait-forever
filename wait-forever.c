@@ -24,9 +24,11 @@
 #include <string.h>
 #include <signal.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 void writepid(const char *pidfile);
 void handle_signal(int _sig);
+void handle_child_signal(int _sig);
 
 int
 main(int argc, char **argv)
@@ -50,6 +52,15 @@ main(int argc, char **argv)
 	}
 	if (sigaction(SIGTERM, &act, NULL) == -1) {
 		perror("cannot set SIGTERM handler");
+		exit(EXIT_FAILURE);
+	}
+
+	const struct sigaction chld_act = {
+		.sa_handler = handle_child_signal,
+		.sa_flags = SA_NOCLDSTOP,
+	};
+	if (sigaction(SIGCHLD, &chld_act, NULL) == -1) {
+		perror("cannot set SIGCHLD handler");
 		exit(EXIT_FAILURE);
 	}
 
@@ -80,4 +91,11 @@ writepid(const char *pidfile)
 void
 handle_signal(int _sig)
 {
+}
+
+void
+handle_child_signal(int _sig)
+{
+	while (waitpid(-1, NULL, WNOHANG) > 0) {
+	}
 }
