@@ -1,11 +1,9 @@
-wait-forever
-------------
+# wait-forever
 
 wait-forever is a program that blocks until it receives SIGINT or SIGTERM.
 It also handles SIGCHLD and reaps child processes.
 
-Usage
------
+## Usage
 
 Run wait-forever where you want to do.
 
