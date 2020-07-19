@@ -22,9 +22,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 #include <unistd.h>
 
 void writepid(const char *pidfile);
+void handle_signal(int _sig);
 
 int
 main(int argc, char **argv)
@@ -41,11 +43,22 @@ main(int argc, char **argv)
 		}
 	}
 
+	const struct sigaction act = { .sa_handler = handle_signal };
+	if (sigaction(SIGINT, &act, NULL) == -1) {
+		perror("cannot set SIGINT handler");
+		exit(EXIT_FAILURE);
+	}
+	if (sigaction(SIGTERM, &act, NULL) == -1) {
+		perror("cannot set SIGTERM handler");
+		exit(EXIT_FAILURE);
+	}
+
 	if (pidfile != NULL) {
 		writepid(pidfile);
 	}
-
 	pause();
+
+	return 0;
 }
 
 void
@@ -58,4 +71,9 @@ writepid(const char *pidfile)
 	}
 	fprintf(fp, "%d\n", getpid());
 	fclose(fp);
+}
+
+void
+handle_signal(int _sig)
+{
 }
