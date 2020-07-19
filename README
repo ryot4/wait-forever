@@ -1,8 +1,8 @@
 wait-forever
 ------------
 
-wait-forever is a program that does nothing and blocks forever.
-It is suitable for the last program invoked from .xinitrc script.
+wait-forever is a program that blocks until it receives SIGINT or SIGTERM.
+It also handles SIGCHLD and reaps child processes.
 
 Usage
 -----
